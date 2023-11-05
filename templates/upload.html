@@ -1,0 +1,29 @@
+<!-- templates/upload.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Upload PDF</title>
+  </head>
+  <body>
+    <h1>Upload PDF</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <label for="pdf">Select PDF:</label>
+      <input type="file" name="pdf" required />
+      <br /><br />
+      <span>User Type:</span>
+      <label for="doctor">Doctor</label>
+      <input type="radio" id="doctor" name="user_type" value="doctor" />
+      <label for="patient">Patient</label>
+      <input
+        type="radio"
+        id="patient"
+        name="user_type"
+        value="patient"
+        checked
+      />
+      <br /><br />
+      <input type="submit" value="Upload" />
+    </form>
+  </body>
+</html>
