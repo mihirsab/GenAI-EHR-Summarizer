@@ -1,0 +1,22 @@
+<!-- templates/upload.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Upload PDF</title>
+  </head>
+  <body>
+    <h1>Upload PDF</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <span>User Type:</span>
+      <label for="1">Medical Test </label>
+      <input type="radio" id="1" name="filter_type" value="1" />
+      <label for="2">Medical History</label>
+      <input type="radio" id="2" name="filter_type" value="2" />
+      <label for="3">Clinic Visits</label>
+      <input type="radio" id="3" name="filter_type" value="3" checked />
+      <br /><br />
+      <input type="submit" value="filter_upload" />
+    </form>
+  </body>
+</html>

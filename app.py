@@ -7,6 +7,15 @@ app = Flask(__name__)
 openai.organization = "org-yhpBYmp8lcRMUF3tFWXQX1ac"
 openai.api_key = "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"
 MAX_LENGTH = 3000
+
+#Assuming we already connected other company's data into the system
+Reports = ["This medical report summary provides a comprehensive overview of the health of the patient, Jane. The comprehensive metabolic panel results were within the normal range, suggesting normal kidney and liver function, electrolyte balance and glucose metabolism. In addition, a chest X-ray was performed and no abnormalities were observed. For lipid levels, the results were healthy and indicated good cardiovascular health. Furthermore, a bone density scan and complete blood count showed that there were no indications of osteoporosis and anemia respectively. Therefore, overall the patient is in good health with lifestyle counseling recommended to maintain a healthy lifestyle. ",
+           "Jane suffers from several conditions, including hypertension, asthma, depression, and mild osteoarthritis in her shoulders and health. She takes various medications to control her conditions as well as nonsteroidal anti-inflammatory drugs (NSAIDs) for pain relief. She also follows a heart-healthy diet and regularly exercises at least thrice a week. Jane is current on her vaccinations and up-to-date on her preventive care visits. Overall, Jane is in good health and experiences minimal symptoms  ",
+           "No further treatment was needed. Jane has received medical care from a variety of issues, including severe migraines, mild upper respiratory infection, and a routine check-up. Medications have been adjusted, referrals to specialists have been made, and general health advice has been provided during these visits. Through physical examinations all findings have been within normal limits. No further treatments have been considered at this time. "]
+
+
+
+
 def split_prompt(text, split_length):
     if split_length <= 0:
         raise ValueError("Max length must be greater than 0.")
@@ -18,18 +27,11 @@ def split_prompt(text, split_length):
         start = i * split_length
         end = start + split_length
         part_text = text[start:end]
-        # message = "End of text." if i == num_parts - 1 else f"Continuing to part {i + 2}."
-        # content = f"[START PART {i + 1}]\n{part_text}\n[END PART {i + 1}]\n{message}"
         file_data.append(part_text)
 
     return file_data
 
-def generate_summary(text, user_type='patient'):
-    # Determine the appropriate prompt based on user type
-    prompt_base = "Generate a medical summary in no more than 100 words in layman term:"
-    if user_type == 'doctor':
-        prompt_base = "Generate medical report summary in no more than 200 words with all diseases and prescriptions for doctors:"
-    
+def generate_summary(text, prompt_base):    
     # If text is short enough, directly return the summary
     if len(text) <= MAX_LENGTH:
         return summarize_text(text, prompt_base)
@@ -68,13 +70,15 @@ def upload():
         return 'No selected file'
 
     user_type = request.form.get('user_type', 'patient')  # Default to 'patient' if not provided
-
+    prompt_base = "Generate a medical summary in no more than 100 words in layman term:"
+    if user_type == 'doctor':
+        prompt_base = "Generate medical report summary in no more than 200 words with all diseases and prescriptions for doctors:"
     if file:
         # Extract text from PDF
         text = extract_text_from_pdf(file)
         
         # Generate summary based on user type
-        summary_html = generate_summary(text, user_type=user_type)
+        summary_html = generate_summary(text, prompt_base)
         
         # Render the result
         return render_template('result.html', summary=summary_html)
@@ -95,7 +99,32 @@ def extract_text_from_pdf(file):
 
     # Return the extracted text
     return all_text
+@app.route('/filter', methods=['GET'])
+def filter():
+    # This will render the filter.html template when '/filter' is accessed via GET
+    return render_template('filter.html')
 
+@app.route('/filter_upload', methods=['POST'])
+def filter_upload():
+    filter_type = request.form.get('filter_type', '1')  # Default to 'patient' if not provided
+    prompt_base = "Generate medical report summary in no more than 200 words with all diseases and prescriptions for doctors:"
+    if filter_type == "1":
+        prompt_base = "Generate medical test summary in no more than 200 words with all diseases and prescriptions for doctors: "
+    elif filter_type =="2":
+        prompt_base = "Generate medical history summary in no more than 200 words with all diseases and prescriptions for doctors:"
+    elif filter_type == "3":
+        prompt_base = "Generate clinical visits summary in no more than 200 words with all diseases and prescriptions for doctors:"
 
+    text = ' '.join(Reports)
+        
+    # Generate summary based on user type
+    summary_html = generate_summary(text, prompt_base)
+        
+    # Render the result
+    return render_template('result.html', summary=summary_html)
+
+@app.route('/hacksc', methods=['GET'])
+def hacksc():
+    return render_template('hacksc.html')
 if __name__ == '__main__':
     app.run(debug=True)

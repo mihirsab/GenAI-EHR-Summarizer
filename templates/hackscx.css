@@ -1,0 +1,135 @@
+* {
+  list-style: none;
+  text-decoration: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+nav {
+  height: 110px;
+  position: fixed;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0px 15px 10px rgba(0, 0, 0, 0.1);
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+.logo {
+  font-size: 30px;
+  font-weight: bold;
+  margin: 15px 0;
+}
+ul li {
+  display: inline-block;
+  padding: 0 20px;
+}
+ul li a {
+  color: #000;
+  font-weight: bold;
+  transition: 0.3s;
+}
+ul li a:hover {
+  color: orange;
+}
+.active {
+  color: orange;
+}
+#landing {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin: 0 auto;
+}
+.land-img img {
+  width: 100%;
+  height: 70vh;
+
+  object-fit: cover;
+}
+.land-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15px;
+  position: relative;
+}
+.land-text h2 {
+  font-size: 30px;
+}
+.land-text p {
+  margin-top: 15px;
+  opacity: 0.5;
+  font-size: 18px;
+}
+.land-text a {
+  margin-top: 10px;
+  background: #0082e6;
+  padding: 11px 22px;
+  border-radius: 20px;
+  color: #fff;
+}
+#about,
+#advice {
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+  line-height: 2;
+}
+#about h2 {
+  font-size: 25px;
+  word-spacing: 3px;
+}
+#about p {
+  font-size: 20px;
+  opacity: 0.7;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+}
+#about p span {
+  font-size: 25px;
+  margin-right: 20px;
+  font-weight: bold;
+  color: orange;
+}
+#advice h2 {
+  word-spacing: 3px;
+  font-size: 25px;
+}
+#advice .card {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin: 10px auto;
+  height: 350px;
+  background: #fff;
+  box-shadow: 5px 1px 15px #ddd;
+}
+.card .card-img {
+  height: 35%;
+}
+.one .card-img {
+  background: #fdca40;
+}
+.two .card-img {
+  background: #4ea5d9;
+}
+.three .card-img {
+  background: #fdca40;
+}
+.card-text {
+  width: 70%;
+  margin: 0 auto;
+  margin-top: 30px;
+  text-align: center;
+  font-size: 16px;
+}
+.card-text p {
+  opacity: 0.7;
+}

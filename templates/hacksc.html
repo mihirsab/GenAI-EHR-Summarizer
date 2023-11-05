@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HealthCare Website</title>
+    <link rel="stylesheet" href="hackscx.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Your HTML structure -->
+      <header>
+        <nav>
+          <label class="logo">HealthCare.</label>
+          <ul>
+            <li><a href="#" class="active">Corona Updates</a></li>
+            <li><a href="#">Help</a></li>
+            <li><a :href="about">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main>
+        <!--   LANDING -->
+        <section id="landing">
+          <div class="land-img">
+            <img
+              src="https://assets-global.website-files.com/5bcb5ee81fb2091a2ec550c7/5dedd7b85049677d981db611_5c65f4ae2f71d67d0ee9f032_hero-image.png"
+            />
+          </div>
+          <div class="land-text">
+            <h2>
+              Stay In.<span style="color: orange; font-size: 18px">
+                Stay Safe.</span
+              >
+            </h2>
+            <p>
+              Google Search, also referred to as Google he World Wide Web across
+              all platforms
+            </p>
+          </div>
+        </section>
+        <!--   ABOUT -->
+        <section id="about">
+          <div class="about-img">
+            <img src="" />
+          </div>
+          <div class="about-text">
+            <h2>
+              Why is it important that<br />
+              <span style="color: #0082e6; font-size: 18px"
+                >You Stay Home?</span
+              >
+            </h2>
+            <ol>
+              <p>
+                <span>01</span> Corona Google Search, also referred to as Google
+                he World Wide Web across all platforms
+              </p>
+              <p>
+                <span>02</span> Corona Google Search, also referred to as Google
+                he World Wide Web across all platforms
+              </p>
+              <p>
+                <span>03</span> Corona Google Search, also referred to as Google
+                he World Wide Web across all platforms
+              </p>
+              <p>
+                <span>04</span> Corona Google Search, also referred to as Google
+                he World Wide Web across all platforms
+              </p>
+            </ol>
+          </div>
+        </section>
+        <!--   ADVICE -->
+        <section id="advice">
+          <h2>
+            Things you could do during the<br /><span style="color: orange"
+              >Coronavirus Quarantine.</span
+            >
+          </h2>
+          <div class="card one">
+            <div class="card-img">yes</div>
+            <div class="card-text">
+              <h3>Learn new Skills</h3>
+              <p>
+                lso referred to as Google he World Wide Web across all platforms
+              </p>
+            </div>
+          </div>
+          <div class="card two">
+            <div class="card-img"></div>
+            <div class="card-text">
+              <h3>Learn new Skills</h3>
+              <p>
+                lso referred to as Google he World Wide Web across all platforms
+              </p>
+            </div>
+          </div>
+          <div class="card three">
+            <div class="card-img">
+              <img src="" />
+            </div>
+            <div class="card-text">
+              <h3>Learn new Skills</h3>
+              <p>
+                lso referred to as Google he World Wide Web across all platforms
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer>
+        <h2>HealthCare.</h2>
+        <ul>
+          <li><a href="#">Corona Updates</a></li>
+          <li><a href="#">Help</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </footer>
+    </div>
+    <!-- Your scripts -->
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/ScrollTrigger.min.js"></script>
+    <script>
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".about-text,.card",
+          start: "center bottom",
+        },
+      });
+      tl.from(".about-text", { x: 200, opacity: 0, duration: 1.5 });
+      tl.from(".card", { y: 200, opacity: 0, duration: 2, stagger: 0.6 });
+      // gsap.from(".about-text",{opacity: 0, duration: 1, y:-50, stagger: 0.6});
+      // gsap.from(".land-text",{opacity: 0, duration: 1, y:-50, stagger: 0.6});
+    </script>
+  </body>
+</html>
