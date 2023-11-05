@@ -5,7 +5,7 @@ import io
 
 app = Flask(__name__)
 openai.organization = "org-yhpBYmp8lcRMUF3tFWXQX1ac"
-openai.api_key = "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"
+openai.api_key = "SECRET"
 app.secret_key = 'your_secret_key'  # Change this to a random secret key
 MAX_LENGTH = 3000
 
