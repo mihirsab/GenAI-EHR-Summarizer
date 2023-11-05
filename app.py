@@ -6,7 +6,7 @@ import io
 app = Flask(__name__)
 openai.organization = "org-yhpBYmp8lcRMUF3tFWXQX1ac"
 openai.api_key = "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"
-MAX_LENGTH = 4000
+MAX_LENGTH = 3000
 def split_prompt(text, split_length):
     if split_length <= 0:
         raise ValueError("Max length must be greater than 0.")
@@ -18,9 +18,9 @@ def split_prompt(text, split_length):
         start = i * split_length
         end = start + split_length
         part_text = text[start:end]
-        message = "End of text. ALL PARTS SENT. Now you can process the request." if i == num_parts - 1 else f"Do not answer yet. This is just another part of the text I want to send you. Continuing to part {i + 2}."
-        content = f"[START PART {i + 1}]\n{part_text}\n[END PART {i + 1}]\n{message} Remember not answering yet. Just acknowledge you received this part with the message"
-        file_data.append({'name': f'part_{i + 1}_of_{num_parts}.txt', 'content': content})
+        # message = "End of text." if i == num_parts - 1 else f"Continuing to part {i + 2}."
+        # content = f"[START PART {i + 1}]\n{part_text}\n[END PART {i + 1}]\n{message}"
+        file_data.append(part_text)
 
     return file_data
 
@@ -36,13 +36,12 @@ def generate_summary(text, user_type='patient'):
     
     # If text is too long, split and summarize each part
     parts = split_prompt(text, MAX_LENGTH)
-    # summaries = []
+    summaries = []
+    summary = ""
     for part in parts:
         # part should be a dictionary with 'content' key
-        part_text = part['content'] 
-        summary = summarize_text(part_text, prompt_base)
-        # summaries.append(summary)
-    # Combine all part summaries into one final summary
+        summary = summarize_text(summary + part, prompt_base)
+    
     return summary
 
 # Helper function to perform the summarization
