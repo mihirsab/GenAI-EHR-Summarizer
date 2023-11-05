@@ -157,6 +157,33 @@ def filter_upload():
     except Exception as e:
         # Handle exceptions that could occur during the summary generation
         return jsonify({'error': 'Failed to generate summary: {}'.format(str(e))}), 500
+    
+@app.route('/filter_question', methods=['POST'])
+def filter_question():
+
+    filter_question = request.form.get('filter_question')  # Default to '1' if not provided
+
+    # Maps for prompt bases
+    #prompt_bases = [filter_question]
+
+    # Select the prompt base
+    prompt_base = filter_question
+
+    try:
+        # Here you should define how Reports is retrieved or constructed before this line.
+        # It might be coming from a database or an API, or even the user's input.
+        # For this example, let's assume Reports is already defined and is a list of report strings.
+  
+            
+        summary = "This report summarizes Jane's health status and confirms that she is healthy and in good condition. Her lipid levels are healthy and overall her lab results have been within the normal range. In addition, her medical conditions are managed well with medications and lifestyle modifications. Jane is current on all her preventive care visits and vaccinations and no further treatments were indicated. Therefore, Jane's overall health can be considered satisfactory."
+            # print("Generated summary:", summary)  # This can help check if the summary is empty after the function call
+
+
+        
+        return jsonify({'summary': summary})
+    except Exception as e:
+        # Handle exceptions that could occur during the summary generation
+        return jsonify({'error': 'Failed to generate summary: {}'.format(str(e))}), 500
 @app.route('/set_user_type', methods=['POST'])
 def set_user_type():
     user_type = request.form['user_type']

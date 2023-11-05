@@ -253,6 +253,10 @@ html {
   height: 50px;
   animation: spin 2s linear infinite;
 }
+.searching {
+  justify-content: center;
+  align-items: center;
+}
 
 @keyframes spin {
   0% {

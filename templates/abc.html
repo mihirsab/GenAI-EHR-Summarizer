@@ -125,6 +125,19 @@
               <input type="submit" value="Upload" />
             </form>
           </div>
+
+          <div class="searching">
+            <form id="search" action="/filter_question" method="get">
+              <input
+                type="search"
+                id="site-search"
+                name="q"
+                aria-label="Search through site content"
+                value="how is her quality of life"
+              />
+              <button type="submit">Search</button>
+            </form>
+          </div>
         </section>
         <!--   ABOUT -->
         <!--   ADVICE -->
@@ -158,6 +171,47 @@
       // gsap.from(".land-text",{opacity: 0, duration: 1, y:-50, stagger: 0.6});
     </script>
     <!-- Place this just before the closing </body> tag of your HTML file -->
+    <script>
+      document.addEventListener("DOMContentLoaded", (event) => {
+        const form = document.getElementById("search");
+        const loader = document.getElementById("loading"); // Get the loader element
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          loader.style.display = "flex"; // Show the loader
+
+          const formData = new FormData(form);
+          fetch("/filter_question", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(
+                  "Network response was not ok " + response.statusText
+                );
+              }
+              return response.json();
+            })
+            .then((data) => {
+              loader.style.display = "none"; // Hide the loader
+              if (data.error) {
+                // Handle the error
+                console.error("Error:", data.error);
+              } else {
+                // Update the card with the summary
+                const adviceParagraph = document.getElementById("healthAdvice");
+                adviceParagraph.textContent = data.summary;
+              }
+            })
+            .catch((error) => {
+              loader.style.display = "none"; // Hide the loader
+              console.error("Error:", error);
+            });
+        });
+      });
+    </script>
     <script>
       document.addEventListener("DOMContentLoaded", (event) => {
         const form = document.getElementById("uploadForm");
