@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/abctest.css') }}"
+    />
+    <style>
+      /* Center the "Upload" button */
+      input[type="submit"] {
+        display: block;
+        margin: 0 auto;
+      }
+      input[type="radio"] {
+        display: block;
+        margin: 0 auto;
+        text-align: center;
+      }
+      /* Style updates for centering content */
+      #app {
+        text-align: center; /* Center text for everything in #app */
+      }
+      .land-text h2 {
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        margin: 0; /* Remove default margin */
+      }
+      /* Center h4 text */
+      h4 {
+        text-align: center;
+        margin: 10px 0; /* Add some vertical spacing between email addresses */
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <nav>
+          <label class="logo">Health Pulse AI</label>
+          <ul>
+            <li>
+              <a href="{{ url_for('index') }}" class="active">Recent Report</a>
+            </li>
+            <li>
+              <a href="{{ url_for('filter') }}">Medical History</a>
+            </li>
+            <li>
+              <a href="{{ url_for('contact') }}">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+      <main>
+        <!-- LANDING -->
+        <section id="landing">
+          <div class="land-text">
+            <h2>Contact US via</h2>
+          </div>
+          <h4>mihirraj@usc.edu</h4>
+          <h4>shingomo@usc.edu</h4>
+          <h4>cgamble@usc.edu</h4>
+          <h4>reetvikc@usc.edu</h4>
+        </section>
+      </main>
+    </div>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/ScrollTrigger.min.js"></script>
+    <script>
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".about-text,.card",
+          start: "center bottom",
+        },
+      });
+      tl.from(".about-text", { x: 200, opacity: 0, duration: 1.5 });
+      tl.from(".card", { y: 200, opacity: 0, duration: 2, stagger: 0.6 });
+      // gsap.from(".about-text",{opacity: 0, duration: 1, y:-50, stagger: 0.6});
+      // gsap.from(".land-text",{opacity: 0, duration: 1, y:-50, stagger: 0.6});
+    </script>
+  </body>
+</html>

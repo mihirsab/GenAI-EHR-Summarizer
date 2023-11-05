@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="app">
+      <header>
+        <link
+          rel="stylesheet"
+          href="{{ url_for('static', filename='css/abctest.css') }}"
+        />
+        <style>
+          /* Center the "Upload" button */
+          input[type="submit"] {
+            display: block;
+            margin: 0 auto;
+          }
+          input[type="radio"] {
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+          }
+        </style>
+
+        <nav>
+          <label class="logo">Health Pulse AI</label>
+          <ul>
+            <li>
+              <a href="{{ url_for('index') }}" class="active">Recent Report</a>
+            </li>
+            <li>
+              <a href="{{ url_for('filter') }}">Medical History</a>
+            </li>
+            <li>
+              <a href="{{ url_for('contact') }}">Contact</a>
+            </li>
+            <li>
+              <!-- Login Button -->
+              <button id="loginBtn" class="login-btn">Login</button>
+            </li>
+          </ul>
+        </nav>
+      </header>
+      <main>
+        <!--   LANDING -->
+        <div id="loading" class="loading-overlay" style="display: none">
+          <div class="loader"></div>
+        </div>
+        <!-- Login Section -->
+        <!-- The Modal -->
+        <div id="loginModal" class="modal">
+          <!-- Modal Content -->
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm" action="/set_user_type" method="post">
+              <div class="login-field">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required />
+              </div>
+              <div class="login-field">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required />
+              </div>
+              <div class="login-field">
+                <label for="userType">User Type:</label>
+                <select id="userType" name="user_type" required>
+                  <option value="patient">Patient</option>
+                  <option value="doctor">Doctor</option>
+                </select>
+              </div>
+              <div class="login-field">
+                <input type="submit" value="Login" />
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <section id="landing">
+          <div class="land-text">
+            <h2>
+              Upload Recent report<span
+                style="color: orange; font-size: 18px"
+              ></span>
+            </h2>
+            <form
+              id="uploadForm"
+              action="/upload"
+              method="post"
+              enctype="multipart/form-data"
+            >
+              <label for="pdf">Select PDF:</label>
+              <input type="file" name="pdf" required />
+              <br /><br />
+              <!-- <span>User Type: </span>
+              <div class="user-type-container">
+                <label for="doctor">Doctor</label>
+                <input
+                  type="radio"
+                  id="doctor"
+                  name="user_type"
+                  value="doctor"
+                />
+                <label for="patient">Patient</label>
+                <input
+                  type="radio"
+                  id="patient"
+                  name="user_type"
+                  value="patient"
+                  checked
+                />
+              </div> -->
+              <!-- <br /><br /> -->
+              <input type="submit" value="Upload" />
+            </form>
+          </div>
+        </section>
+        <!--   ABOUT -->
+        <!--   ADVICE -->
+        <section id="advice">
+          <div class="card one">
+            <div class="card-img"><h2>Summary</h2></div>
+            <!-- Loading Overlay -->
+
+            <div class="card-text">
+              <p id="healthAdvice">You should have regular health check ups</p>
+            </div>
+          </div>
+        </section>
+        <!--   AD -->
+        <section id="advert"></section>
+      </main>
+    </div>
+
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/ScrollTrigger.min.js"></script>
+    <script>
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".about-text,.card",
+          start: "center bottom",
+        },
+      });
+      tl.from(".about-text", { x: 200, opacity: 0, duration: 1.5 });
+      tl.from(".card", { y: 200, opacity: 0, duration: 2, stagger: 0.6 });
+      // gsap.from(".about-text",{opacity: 0, duration: 1, y:-50, stagger: 0.6});
+      // gsap.from(".land-text",{opacity: 0, duration: 1, y:-50, stagger: 0.6});
+    </script>
+    <!-- Place this just before the closing </body> tag of your HTML file -->
+    <script>
+      document.addEventListener("DOMContentLoaded", (event) => {
+        const form = document.getElementById("uploadForm");
+        const loader = document.getElementById("loading"); // Get the loader element
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          loader.style.display = "flex"; // Show the loader
+
+          const formData = new FormData(form);
+          fetch("/upload", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(
+                  "Network response was not ok " + response.statusText
+                );
+              }
+              return response.json();
+            })
+            .then((data) => {
+              loader.style.display = "none"; // Hide the loader
+              if (data.error) {
+                // Handle the error
+                console.error("Error:", data.error);
+              } else {
+                // Update the card with the summary
+                const adviceParagraph = document.getElementById("healthAdvice");
+                adviceParagraph.textContent = data.summary;
+              }
+            })
+            .catch((error) => {
+              loader.style.display = "none"; // Hide the loader
+              console.error("Error:", error);
+            });
+        });
+      });
+    </script>
+    <script>
+      // Get the modal
+      var modal = document.getElementById("loginModal");
+
+      // Get the button that opens the modal
+      var btn = document.getElementById("loginBtn");
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks on the button, open the modal
+      btn.onclick = function () {
+        modal.style.display = "block";
+      };
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>

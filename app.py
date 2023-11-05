@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify, session, redirect, url_for
 import PyPDF2
 import openai
 import io
@@ -6,6 +6,7 @@ import io
 app = Flask(__name__)
 openai.organization = "org-yhpBYmp8lcRMUF3tFWXQX1ac"
 openai.api_key = "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"
+app.secret_key = 'your_secret_key'  # Change this to a random secret key
 MAX_LENGTH = 3000
 
 #Assuming we already connected other company's data into the system
@@ -15,6 +16,11 @@ Reports = ["This medical report summary provides a comprehensive overview of the
 
 
 
+@app.before_request
+def default_user_type():
+    # Set default user type if not already set
+    if 'user_type' not in session:
+        session['user_type'] = 'patient'
 
 def split_prompt(text, split_length):
     if split_length <= 0:
@@ -38,12 +44,12 @@ def generate_summary(text, prompt_base):
     
     # If text is too long, split and summarize each part
     parts = split_prompt(text, MAX_LENGTH)
+    print(parts)
     summaries = []
     summary = ""
     for part in parts:
         # part should be a dictionary with 'content' key
         summary = summarize_text(summary + part, prompt_base)
-    
     return summary
 
 # Helper function to perform the summarization
@@ -58,30 +64,35 @@ def summarize_text(text, prompt_base):
 
 @app.route('/')
 def index():
-    return render_template('upload.html')  # This should contain the form for uploading PDF
-
+    return render_template('abc.html')  # This should contain the form for uploading PDF
 @app.route('/upload', methods=['POST'])
 def upload():
     if 'pdf' not in request.files:
-        return 'No file part'
+        return jsonify({'error': 'No file part'}), 400
 
     file = request.files['pdf']
     if file.filename == '':
-        return 'No selected file'
+        return jsonify({'error': 'No selected file'}), 400
 
-    user_type = request.form.get('user_type', 'patient')  # Default to 'patient' if not provided
-    prompt_base = "Generate a medical summary in no more than 100 words in layman term:"
+    user_type = session['user_type']  # Default to 'patient' if not provided
+    prompt_base = "Provide a concise medical summary, outlining overall health status, underlying health conditions, prescribed medications, and lifestyle management in plain language, with a maximum of 150 words"
     if user_type == 'doctor':
-        prompt_base = "Generate medical report summary in no more than 200 words with all diseases and prescriptions for doctors:"
+        prompt_base = "Generate a concise medical test summary, designed for doctors, encompassing all diseases and corresponding prescriptions within a 200-word limit."
+    
+    # Assuming extract_text_from_pdf and generate_summary are defined and return the expected values.
     if file:
-        # Extract text from PDF
-        text = extract_text_from_pdf(file)
-        
-        # Generate summary based on user type
-        summary_html = generate_summary(text, prompt_base)
-        
-        # Render the result
-        return render_template('result.html', summary=summary_html)
+        try:
+            # Extract text from PDF
+            text = extract_text_from_pdf(file)
+            
+            # Generate summary based on user type
+            summary = generate_summary(text, prompt_base)
+            
+            # Return the result as JSON
+            return jsonify({'summary': summary})
+        except Exception as e:
+            # Handle exceptions that could occur during PDF extraction and summary generation
+            return jsonify({'error': str(e)}), 500
 
 def extract_text_from_pdf(file):
     # Create a PDF file reader object
@@ -102,29 +113,59 @@ def extract_text_from_pdf(file):
 @app.route('/filter', methods=['GET'])
 def filter():
     # This will render the filter.html template when '/filter' is accessed via GET
-    return render_template('filter.html')
+    return render_template('page2.html')
 
 @app.route('/filter_upload', methods=['POST'])
 def filter_upload():
-    filter_type = request.form.get('filter_type', '1')  # Default to 'patient' if not provided
-    prompt_base = "Generate medical report summary in no more than 200 words with all diseases and prescriptions for doctors:"
-    if filter_type == "1":
-        prompt_base = "Generate medical test summary in no more than 200 words with all diseases and prescriptions for doctors: "
-    elif filter_type =="2":
-        prompt_base = "Generate medical history summary in no more than 200 words with all diseases and prescriptions for doctors:"
-    elif filter_type == "3":
-        prompt_base = "Generate clinical visits summary in no more than 200 words with all diseases and prescriptions for doctors:"
+    if 'filter_type' not in request.form:
+        return jsonify({'error': 'Filter type not provided'}), 400
 
-    text = ' '.join(Reports)
-        
-    # Generate summary based on user type
-    summary_html = generate_summary(text, prompt_base)
-        
-    # Render the result
-    return render_template('result.html', summary=summary_html)
+    filter_type = request.form.get('filter_type', '1')  # Default to '1' if not provided
 
-@app.route('/hacksc', methods=['GET'])
-def hacksc():
-    return render_template('hacksc.html')
+    # Maps for prompt bases
+    prompt_bases = {
+        "1": "Generate a comprehensive lab test report summary for healthcare professionals in 200 words, including relevant diagnoses and recommended treatments.",
+        "2": "Generate a concise medical history report summary, not exceeding 200 words, outlining all relevant medical conditions and associated prescriptions for healthcare professionals.",
+        "3": "Generate a succinct clinical visit summary for healthcare professionals, providing essential details of the patient's visit, diagnosis, and treatment within a 200-word limit"
+    }
+
+    # Select the prompt base
+    prompt_base = prompt_bases.get(filter_type, prompt_bases["1"])
+
+    try:
+        # Here you should define how Reports is retrieved or constructed before this line.
+        # It might be coming from a database or an API, or even the user's input.
+        # For this example, let's assume Reports is already defined and is a list of report strings.
+        summary = ""
+        while summary == "":
+            text = ' '.join(Reports)
+            
+            # Generate summary based on filter type
+            # print("Text to summarize:", text)  # This will help verify the text is correct before summarization
+            summary = generate_summary(text, prompt_base)
+            # print("Generated summary:", summary)  # This can help check if the summary is empty after the function call
+
+        # text = ' '.join(Reports)
+        
+        # # Generate summary based on filter type
+        # # print("Text to summarize:", text)  # This will help verify the text is correct before summarization
+        # summary = generate_summary(text, prompt_base)
+        # # print("Generated summary:", summary)  # This can help check if the summary is empty after the function call
+        # # Return the summary as JSON
+        
+        return jsonify({'summary': summary})
+    except Exception as e:
+        # Handle exceptions that could occur during the summary generation
+        return jsonify({'error': 'Failed to generate summary: {}'.format(str(e))}), 500
+@app.route('/set_user_type', methods=['POST'])
+def set_user_type():
+    user_type = request.form['user_type']
+    session['user_type'] = user_type
+    return redirect(url_for('index'))
+
+
+@app.route('/contact', methods=['GET'])
+def contact():
+    return render_template('contact.html')
 if __name__ == '__main__':
     app.run(debug=True)

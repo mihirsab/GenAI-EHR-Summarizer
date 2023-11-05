@@ -1,12 +1,21 @@
 <!-- templates/result.html -->
 <!DOCTYPE html>
 <html lang="en">
+  <header>
+      <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/abctest.css') }}"
+      />
   <head>
     <meta charset="UTF-8" />
     <title>Summary</title>
   </head>
   <body>
+    <div class  = "summary-test">
+      <p>
     <!-- The summary HTML will be directly injected here -->
     {{ summary|safe }}
+      </p>
+  </div>
   </body>
 </html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <header>
+      <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/abctest.css') }}"
+      />
+      <style>
+        /* Center the "Upload" button */
+        input[type="submit"] {
+          display: block;
+          margin: 0 auto;
+        }
+        input[type="radio"] {
+          display: block;
+          margin: 0 auto;
+          text-align: center;
+        }
+      </style>
+
+      <nav>
+        <label class="logo">Health Pulse AI</label>
+        <ul>
+          <li>
+            <a href="{{ url_for('index') }}" class="active">Recent Report</a>
+          </li>
+          <li>
+            <a href="{{ url_for('filter') }}">Medical History</a>
+          </li>
+          <li>
+            <a href="{{ url_for('contact') }}">Contact</a>
+          </li>
+          <!-- <li>
+            <button id="loginBtn" class="login-btn">Login</button>
+          </li> -->
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <!--   LANDING -->
+      <!-- Loading Overlay -->
+      <div id="loading" class="loading-overlay" style="display: none">
+        <div class="loader"></div>
+      </div>
+      <section id="landing">
+        <div class="land-text">
+          <h2>
+            Following is the medical history for reference<span
+              style="color: orange; font-size: 18px"
+            ></span>
+          </h2>
+        </div>
+
+        <div class="post-result-p2">
+          <h2>Post Results to the Website</h2>
+          <form id="uploadForm" method="POST" action="/filter_upload">
+            <br /><br />
+
+            <label for="filter">Filter:</label>
+            <select id="filter_type" name="filter_type">
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3">Option 3</option>
+            </select>
+            <div class="submit-result-p2">
+              <input type="submit" value="Post Result" />
+            </div>
+          </form>
+        </div>
+      </section>
+      <section id="advice">
+        <div class="card one">
+          <div class="card-img"><h2>Summary</h2></div>
+          <div class="card-text">
+            <p id="healthAdvice">You should have regular health check ups</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/ScrollTrigger.min.js"></script>
+    <script>
+      // GSAP animations
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".about-text,.card",
+          start: "center bottom",
+        },
+      });
+
+      tl.from(".about-text", { x: 200, opacity: 0, duration: 1.5 });
+      tl.from(".card", { y: 200, opacity: 0, duration: 2, stagger: 0.6 });
+
+      // Handling form submission with fetch API
+      document.addEventListener("DOMContentLoaded", (event) => {
+        const form = document.getElementById("uploadForm");
+        const loader = document.getElementById("loading"); // Get the loader element
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          loader.style.display = "flex"; // Show the loader
+
+          const formData = new FormData(form);
+          fetch("/filter_upload", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(
+                  "Network response was not ok " + response.statusText
+                );
+              }
+              return response.json();
+            })
+            .then((data) => {
+              console.log("Received data:", data); // For debugging purposes
+              if (data.error) {
+                console.error("Error:", data.error);
+              } else {
+                // Update the card with the summary
+                const adviceParagraph = document.getElementById("healthAdvice");
+                adviceParagraph.textContent = data.summary;
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            })
+            .finally(() => {
+              loader.style.display = "none"; // Hide the loader irrespective of success or error
+            });
+        });
+      });
+    </script>
+  </body>
+</html>
