@@ -233,13 +233,6 @@ html {
   cursor: pointer;
 }
 
-.login-btn {
-  /* Style as needed */
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
 .loading-overlay {
   display: none;
   position: fixed;

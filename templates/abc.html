@@ -18,10 +18,27 @@
             margin: 0 auto;
             text-align: center;
           }
+          /* Style for login button */
+          .login-btn {
+            position: absolute;
+            top: 20px; /* Adjust the value as needed */
+            right: 20px; /* Adjust the value as needed */
+            z-index: 10;
+            color: #000000;
+            font-size: 28px;
+            font-weight: bold;
+          }
+
+          /* Ensure the header has a relative position for absolute positioning inside it */
+          header {
+            position: relative;
+          }
         </style>
+        <!-- Login Button -->
 
         <nav>
           <label class="logo">Health Pulse AI</label>
+          <button id="loginBtn" class="login-btn">Login</button>
           <ul>
             <li>
               <a href="{{ url_for('index') }}" class="active">Recent Report</a>
@@ -31,10 +48,6 @@
             </li>
             <li>
               <a href="{{ url_for('contact') }}">Contact</a>
-            </li>
-            <li>
-              <!-- Login Button -->
-              <button id="loginBtn" class="login-btn">Login</button>
             </li>
           </ul>
         </nav>
